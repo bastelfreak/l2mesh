@@ -18,19 +18,18 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 class l2mesh::params {
-  case $::osfamily {
+  case $facts['os']['family'] {
     'Debian': {
-      $keys_directory           = '/var/lib/puppet/l2mesh'
-      $tinc_package_name        = 'tinc'
+      $tinc_package_name = 'tinc'
     }
     'RedHat': {
-      $keys_directory           = '/var/lib/puppet/l2mesh'
-      $tinc_package_name        = 'tinc'
+      $tinc_package_name = 'tinc'
+    }
+    'Archlinux': {
+      $tinc_package_name = 'tinc'
     }
     default: {
-      fail("Unsupported osfamily: ${::osfamily}
-operatingsystem: ${::operatingsystem},
-module ${module_name} only support osfamily RedHat and Debian")
+      fail("Unsupported osfamily: ${::osfamily} operatingsystem: ${::operatingsystem}, module ${module_name} only support osfamily RedHat and Debian")
     }
   }
   file { '/var/lib/puppet':

@@ -212,7 +212,7 @@ define l2mesh::vpn (
 
   $private     = "${root}/rsa_key.priv"
   $public      = "${root}/rsa_key.pub"
-  $keys        = tinc_keygen("${l2mesh::params::keys_directory}/${name}/${fqdn}")
+  $keys        = tinc_keygen("${root}/${fqdn}")
   $private_key = $keys[0]
   $public_key  = $keys[1]
 
