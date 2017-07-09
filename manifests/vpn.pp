@@ -265,14 +265,21 @@ define l2mesh::vpn (
     # this would probably much easier if both were unified. Exporting the cert content as facts sucks
     # we should be able to use the function to generate the keys, but afterwards work with the file paths?
     $keys            = tinc_keygen("${root}/${fqdn}")
-    $private_content = $keys[0]
-    $public_content  = $keys[1]
+    #$private_content = $keys[0]
+    #$public_content  = $keys[1]
+
+    # the upcoming line is needed to ensure that the above function is actually called
+    if $keys {
+      $private_source  = "${root}/${fqdn}/rsa_key.priv"
+      $public_source   = "${root}/${fqdn}/rsa_key.pub"
+    }
   }
+
   file { $private:
     owner   => 'root',
     group   => 'root',
     mode    => '0400',
-    content => $private_content,
+    #content => $private_content,
     source  => $private_source,
     notify  => Service[$service],
     before  => Service[$service],
@@ -288,7 +295,7 @@ define l2mesh::vpn (
 
   concat::fragment{"${conf}pubkey":
     target => $public,
-    content => $public_content,
+    #content => $public_content,
     source  => $public_source,
   }
 
@@ -305,20 +312,23 @@ define l2mesh::vpn (
     target  => $conf,
     content => template('l2mesh/vpn.erb'),
   }
+  # get the missing fragments from all nodes
+  Concat::Fragment <<| tag == $tag |>>
 
-  @@l2mesh::host { $fqdn:
-    host               => $host,
-    ip                 => $ip,
-    port               => $port,
-    tcp_only           => $tcp_only,
-    public_key_content => $public_content,
-    public_key_source  => $public_source,
-    tag_conf           => $tag_conf,
-    file_tag           => $tag,
-    service            => $service,
-    conf               => $conf,
+  class{'::l2mesh::host':
+    fqdn                => $fqdn,
+    host                => $host,
+    ip                  => $ip,
+    port                => $port,
+    tcp_only            => $tcp_only,
+    #public_key_content => $public_content,
+    public_key_source   => $public_source,
+    tag_conf            => $tag_conf,
+    file_tag            => $tag,
+    service             => $service,
+    conf                => $conf,
   }
-  L2mesh::Host <<| fqdn != $fqdn |>>
+  #L2mesh::Host <<| fqdn != $fqdn |>>
 
   if $facts['systemd'] {
     # the service gets required from l2mesh::host
@@ -341,4 +351,3 @@ define l2mesh::vpn (
     }
   }
 }
-
