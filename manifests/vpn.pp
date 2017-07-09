@@ -259,6 +259,11 @@ define l2mesh::vpn (
     $private_source  = "/etc/puppetlabs/puppet/ssl/private_keys/${facts['fqdn']}.pem"
     $public_source   = "/etc/puppetlabs/puppet/ssl/public_keys/${facts['fqdn']}.pem"
   } else {
+    # the function returns an array with two strings, the private and pubkey
+    # an alternative is the usage of the puppet certs. The tricky part is that the puppet certs are file handles,
+    # the generates ones are actual strings, so the handling in the upcoming concat resources is tricky.
+    # this would probably much easier if both were unified. Exporting the cert content as facts sucks
+    # we should be able to use the function to generate the keys, but afterwards work with the file paths?
     $keys            = tinc_keygen("${root}/${fqdn}")
     $private_content = $keys[0]
     $public_content  = $keys[1]
