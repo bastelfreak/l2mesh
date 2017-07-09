@@ -178,10 +178,12 @@
 #
 # Copyright 2012 eNovance <licensing@enovance.com>
 #
+
 define l2mesh::vpn (
-  $ip,
-  $port,
-  $tcp_only = 'no',
+  String $ip,
+  Integer $port,
+  $tcp_only                 = 'no',
+  Boolean $use_puppet_certs = true,
 ) {
 
   include l2mesh::params
@@ -212,10 +214,6 @@ define l2mesh::vpn (
 
   $private     = "${root}/rsa_key.priv"
   $public      = "${root}/rsa_key.pub"
-  $keys        = tinc_keygen("${root}/${fqdn}")
-  $private_key = $keys[0]
-  $public_key  = $keys[1]
-
 
   if ! defined(Concat[$boots]) {
     concat { $boots:
@@ -247,12 +245,22 @@ define l2mesh::vpn (
     mode    => '0755',
     require => File[$root],
   }
-
+  if $use_puppet_certs {
+    $private_content = undef
+    $public_content  = undef
+    $private_source  = "/etc/puppetlabs/puppet/ssl/private_keys/${facts['fqdn']}.pem"
+    $public_source   = "/etc/puppetlabs/puppet/ssl/public_keys/${facts['fqdn']}.pem"
+  } else {
+    $keys            = tinc_keygen("${root}/${fqdn}")
+    $private_content = $keys[0]
+    $public_content  = $keys[1]
+  }
   file { $private:
     owner   => 'root',
     group   => 'root',
     mode    => '0400',
-    content => $private_key,
+    content => $private_content,
+    source  => $private_source,
     notify  => Exec[$reload],
     before  => Service[$service],
   }
@@ -261,11 +269,11 @@ define l2mesh::vpn (
     owner   => 'root',
     group   => 'root',
     mode    => '0444',
-    content => $public_key,
+    content => $public_content,
+    source  => $public_source,
     notify  => Exec[$reload],
     before  => Service[$service],
   }
-
 
   # Build tinc.conf file, adding hosts except localhost
   concat { $conf:
