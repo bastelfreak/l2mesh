@@ -297,8 +297,11 @@ define l2mesh::vpn (
     ip         => $ip,
     port       => $port,
     tcp_only   => $tcp_only,
-    public_key => $public_key,
+    public_key => '',
     tag_conf   => $tag_conf,
+    file_tag   => $tag,
+    reload     => $reload,
+    service    => $service,
   }
   L2mesh::Host <<| fqdn != $fqdn |>> {
     conf => $conf,

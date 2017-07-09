@@ -6,6 +6,9 @@ define l2mesh::host(
   $tcp_only,
   $public_key,
   $tag_conf,
+  $reload,
+  $service,
+  $file_tag,
   $fqdn = $name,
   $conf = undef,
 ) {
@@ -14,10 +17,9 @@ define l2mesh::host(
     owner   => root,
     group   => root,
     mode    => '0444',
-    require => File[$hosts],
     notify  => Exec[$reload],
     before  => Service[$service],
-    tag     => $tag,
+    tag     => $file_tag,
     content => template('l2mesh/host.erb'),
 
   }
