@@ -6,7 +6,6 @@ define l2mesh::host(
   $tcp_only,
   $public_key,
   $tag_conf,
-  $reload,
   $service,
   $file_tag,
   $fqdn = $name,
@@ -17,11 +16,10 @@ define l2mesh::host(
     owner   => root,
     group   => root,
     mode    => '0444',
-    notify  => Exec[$reload],
+    notify  => Service[$service],
     before  => Service[$service],
     tag     => $file_tag,
     content => template('l2mesh/host.erb'),
-
   }
   concat::fragment { "${tag_conf}_${fqdn}":
     target  => $conf,

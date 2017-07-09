@@ -197,7 +197,6 @@ define l2mesh::vpn (
   }
   $service  = "tinc-${name}"
   $start    = "start_${name}"
-  $reload   = "reload_${name}"
 
   $running  = "tincd --net=${name} --kill=USR1"
 
@@ -261,7 +260,7 @@ define l2mesh::vpn (
     mode    => '0400',
     content => $private_content,
     source  => $private_source,
-    notify  => Exec[$reload],
+    notify  => Service[$service],
     before  => Service[$service],
   }
 
@@ -271,7 +270,7 @@ define l2mesh::vpn (
     mode    => '0444',
     content => $public_content,
     source  => $public_source,
-    notify  => Exec[$reload],
+    notify  => Service[$service],
     before  => Service[$service],
   }
 
@@ -281,16 +280,13 @@ define l2mesh::vpn (
     group   => 'root',
     mode    => '0444',
     require => File[$root],
-    notify  => Exec[$reload],
+    notify  => Service[$service],
   }
 
   concat::fragment { "${conf}_head":
     target  => $conf,
     content => template('l2mesh/vpn.erb'),
   }
-
-
-
 
   @@l2mesh::host { $fqdn:
     host       => $host,
@@ -300,28 +296,31 @@ define l2mesh::vpn (
     public_key => '',
     tag_conf   => $tag_conf,
     file_tag   => $tag,
-    reload     => $reload,
     service    => $service,
   }
   L2mesh::Host <<| fqdn != $fqdn |>> {
     conf => $conf,
   }
 
-  file { "/etc/init.d/${service}":
-    content => template('l2mesh/initscript.erb'),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0755',
-  }
-  service { $service:
-    ensure => 'running',
-    enable => true,
-  }
-
-  exec { $reload:
-    command     => "service ${service} reload",
-    provider    => 'shell',
-    refreshonly => true,
+  if $facts['systemd'] {
+    # the service gets required from l2mesh::host
+    # so we need a unified resource name
+    service{$service:
+      name   => "tinc@${name}",
+      ensure => 'running',
+      enable => true,
+    }
+  } else {
+    file { "/etc/init.d/${service}":
+      content => template('l2mesh/initscript.erb'),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0755',
+    }
+    -> service { $service:
+      ensure => 'running',
+      enable => true,
+    }
   }
 }
 
