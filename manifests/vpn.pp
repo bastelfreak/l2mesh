@@ -237,6 +237,15 @@ define l2mesh::vpn (
     }
   }
 
+  if ! defined(File['/etc/tinc']) {
+    file{'/etc/tinc':
+      ensure => 'directory',
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0755',
+    }
+  }
+
   file { $hosts:
     ensure  => 'directory',
     owner   => 'root',
