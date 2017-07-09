@@ -273,14 +273,18 @@ define l2mesh::vpn (
     before  => Service[$service],
   }
 
-  file { $public:
+  concat{$public:
     owner   => 'root',
     group   => 'root',
     mode    => '0444',
-    content => $public_content,
-    source  => $public_source,
     notify  => Service[$service],
     before  => Service[$service],
+  }
+
+  concat::fragment{"${conf}pubkey":
+    target => $public,
+    content => $public_content,
+    source  => $public_source,
   }
 
   # Build tinc.conf file, adding hosts except localhost
@@ -298,18 +302,18 @@ define l2mesh::vpn (
   }
 
   @@l2mesh::host { $fqdn:
-    host       => $host,
-    ip         => $ip,
-    port       => $port,
-    tcp_only   => $tcp_only,
-    public_key => '',
-    tag_conf   => $tag_conf,
-    file_tag   => $tag,
-    service    => $service,
+    host               => $host,
+    ip                 => $ip,
+    port               => $port,
+    tcp_only           => $tcp_only,
+    public_key_content => $public_content,
+    public_key_source  => $public_source,
+    tag_conf           => $tag_conf,
+    file_tag           => $tag,
+    service            => $service,
+    conf               => $conf,
   }
-  L2mesh::Host <<| fqdn != $fqdn |>> {
-    conf => $conf,
-  }
+  L2mesh::Host <<| fqdn != $fqdn |>>
 
   if $facts['systemd'] {
     # the service gets required from l2mesh::host
