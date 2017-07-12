@@ -33,6 +33,10 @@
     {
       "name":"puppetlabs-stdlib",
       "version_requirement":">= 4.5.0"
+    },
+    {
+      "name": "camptocamp/systemd",
+      "version_requirement": ">= 0.4.0 < 2.0.0"
     }
   ]
 }
