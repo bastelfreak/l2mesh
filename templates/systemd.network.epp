@@ -1,0 +1,5 @@
+[Match]
+Name=<%= $l2mesh::host::network %>
+
+[Address]
+Address=<%= $l2mesh::host::prefix %>:<%= $l2mesh::host::address%>/<%= $l2mesh::host::prefixlength %>

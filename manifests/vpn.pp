@@ -327,6 +327,7 @@ define l2mesh::vpn (
     file_tag            => $tag,
     service             => $service,
     conf                => $conf,
+    network             => $name,
   }
   #L2mesh::Host <<| fqdn != $fqdn |>>
 

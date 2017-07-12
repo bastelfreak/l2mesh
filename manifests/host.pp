@@ -10,6 +10,7 @@ define l2mesh::host(
   $public_key_source,
   #$public_key_content = undef,
   $fqdn,
+  $network,
   $conf               = undef,
 ) {
 
@@ -50,4 +51,18 @@ define l2mesh::host(
   # get the files for all nodes with pub keys
   Concat <<| tag == $file_tag |>>
   Concat::Fragment <<| tag == $file_tag |>>
+
+  # write systemd config
+  $prefix = 'fd00:'
+  $prefixlength = 16
+  systemd::network{"${network}.netdev":
+    source          => "puppet:///modules/${module_name}/systemd.netdev",
+    restart_service => true,
+  }
+  if $address = $facts['networking']['interfaces']['elknetwork']['mac'] {
+    systemd::network{"${network}.network":
+      source          => "puppet:///modules/${module_name}/systemd.network",
+      restart_service => true,
+    }
+  }
 }
