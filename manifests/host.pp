@@ -1,5 +1,5 @@
 # vim: set expandtab:
-class l2mesh::host(
+define l2mesh::host(
   $host,
   $ip,
   $port,
@@ -9,7 +9,7 @@ class l2mesh::host(
   $file_tag,
   $public_key_source,
   #$public_key_content = undef,
-  $fqdn, 
+  $fqdn,
   $conf               = undef,
 ) {
 
