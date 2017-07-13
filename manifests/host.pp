@@ -53,14 +53,15 @@ define l2mesh::host(
   Concat::Fragment <<| tag == $file_tag |>>
 
   # write systemd config
-  $prefix = 'fd00:'
+  $prefix = 'fd00::'
   $prefixlength = 16
   systemd::network{"${network}.netdev":
     source          => "puppet:///modules/${module_name}/systemd.netdev",
     restart_service => true,
   }
   if $facts['networking']['interfaces'][$network] {
-    $address = $facts['networking']['interfaces']['elknetwork']['mac']
+    $mac = $facts['networking']['interfaces']['elknetwork']['mac']
+    $address = $mac
     systemd::network{"${network}.network":
       source          => "puppet:///modules/${module_name}/systemd.network",
       restart_service => true,
