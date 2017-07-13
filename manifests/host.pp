@@ -1,16 +1,16 @@
 # vim: set expandtab:
 define l2mesh::host(
-  $host,
-  $ip,
-  $port,
+  String $host,
+  String $ip,
+  Integer $port,
   $tcp_only,
   $tag_conf,
   $service,
   $file_tag,
   $public_key_source,
   #$public_key_content = undef,
-  $fqdn,
-  $network,
+  String $fqdn,
+  String $network,
   $conf               = undef,
 ) {
 
@@ -59,7 +59,8 @@ define l2mesh::host(
     source          => "puppet:///modules/${module_name}/systemd.netdev",
     restart_service => true,
   }
-  if $address = $facts['networking']['interfaces']['elknetwork']['mac'] {
+  if $facts['networking']['interfaces'][$network] {
+    $address = $facts['networking']['interfaces']['elknetwork']['mac']
     systemd::network{"${network}.network":
       source          => "puppet:///modules/${module_name}/systemd.network",
       restart_service => true,
