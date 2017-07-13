@@ -43,9 +43,10 @@ define l2mesh::host(
 
   # export, collected in main class
   @@concat::fragment { "${tag_conf}_${fqdn}":
-    target  => $conf,
-    tag     => $file_tag,
-    content => "ConnectTO = ${fqdn}\n",
+    target         => $conf,
+    tag            => $file_tag,
+    content        => "ConnectTO = ${fqdn}",
+    ensure_newline => true,
   }
 
   # get the files for all nodes with pub keys
