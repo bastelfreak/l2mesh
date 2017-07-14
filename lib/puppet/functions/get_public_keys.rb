@@ -12,53 +12,45 @@
 require 'openssl'
 require 'rest-client'
 Puppet::Functions.create_function(:get_public_keys) do
-#  dispatch :get_cert do
-#    param 'String', :fqdn
-#    return_type 'String'
-#  end
+  dispatch :get_public_key do
+    param 'String', :fqdn
+    return_type 'String'
+  end
+
+  dispatch :get_local_public_key do
+    return_type 'String'
+  end
 
   dispatch :get_public_keys do
     param 'Array', :fqdns
+    return_type 'Hash'
   end
 
-#  def get_cert(fqdn)
-#    base = 'https://fabric-puppetserver01.vps.hosteurope.de:8140/puppet-ca/v1/certificate-status/'
-#    url = "#{base}#{fqdn}"
-#    ssldir = '/etc/puppetlabs/puppet/ssl'
-#    ca = "#{ssldir}/certs/ca.pem"
-#    client_priv = "#{ssldir}/private_key/fabric-puppetserver01.vps.hosteurope.de.pem"
-#    client_cert = "#{ssldir}/certs/fabric-puppetserver01.vps.hosteurope.de.pem"
-#    result = RestClient::Resource.new(
-#      url: url,
-#      ssl_ca_file: ca,
-#      ssl_client_cert: OpenSSL::X509::Certificate.new(File.read(client_cert)),
-#      ssl_client_key: OpenSSL::PKey::RSA.new(File.read(client_priv)),
-#      verify_ssl: OpenSSL::SSL::VERIFY_PEER
-#    ).get
-#    certificate = OpenSSL::X509::Certificate.new(result)
-#    certificate.public_key.to_s
-#  end
-
-  def get_public_keys(fqdns)
-    base = 'https://fabric-puppetserver01.vps.hosteurope.de:8140/puppet-ca/v1/certificate/'
+  def get_public_key(fqdn)
+    base = 'https://fabric-puppetserver01.vps.hosteurope.de:8140/puppet-ca/v1/certificate-status/'
+    url = "#{base}#{fqdn}"
     ssldir = '/etc/puppetlabs/puppet/ssl'
     ca = "#{ssldir}/certs/ca.pem"
-    client_priv = "#{ssldir}/private_keys/fabric-puppetserver01.vps.hosteurope.de.pem"
-    client_cert = "#{ssldir}/certs/fabric-puppetserver01.vps.hosteurope.de.pem"
-    certs = {}
+    result = RestClient::Resource.new(
+      url,
+      ssl_ca_file: ca,
+      verify_ssl: OpenSSL::SSL::VERIFY_PEER
+    ).get
+    certificate = OpenSSL::X509::Certificate.new(result)
+    certificate.public_key.to_s
+  end
+
+  # get the key for the calling node
+  def get_local_public_key
+    get_public_key scope['facts']['networking']['fqdn']
+  end
+
+  def get_public_keys(fqdns)
+    keys = {}
     fqdns.each do |fqdn|
-      url = "#{base}#{fqdn}"
-     #certs[fqdn] = get_cert(fqdn)
-      result = RestClient::Resource.new(
-        url: url,
-        ssl_ca_file: ca,
-        ssl_client_cert: OpenSSL::X509::Certificate.new(File.read(client_cert)),
-        ssl_client_key: OpenSSL::PKey::RSA.new(File.read(client_priv)),
-        verify_ssl: OpenSSL::SSL::VERIFY_PEER
-      ).get
-      certificate = OpenSSL::X509::Certificate.new(result)
-      certificate.public_key.to_s
+      key = get_public_key fqdn
+      keys[fqdn] = key
     end
-    certs
+    keys
   end
 end
