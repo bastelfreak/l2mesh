@@ -301,11 +301,12 @@ define l2mesh::vpn (
 
   # Build tinc.conf file, adding hosts except localhost
   concat { $conf:
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0444',
-    require => File[$root],
-    notify  => Service[$service],
+    owner          => 'root',
+    group          => 'root',
+    mode           => '0444',
+    require        => File[$root],
+    notify         => Service[$service],
+    ensure_newline => true,
   }
 
   concat::fragment { "${conf}_head":

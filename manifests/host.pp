@@ -46,7 +46,6 @@ define l2mesh::host(
     target         => $conf,
     tag            => $file_tag,
     content        => "ConnectTO = ${fqdn}",
-    ensure_newline => true,
   }
 
   # get the files for all nodes with pub keys
