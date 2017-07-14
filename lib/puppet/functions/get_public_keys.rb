@@ -27,7 +27,7 @@ Puppet::Functions.create_function(:get_public_keys) do
   end
 
   def get_public_key(fqdn)
-    base = 'https://fabric-puppetserver01.vps.hosteurope.de:8140/puppet-ca/v1/certificate-status/'
+    base = 'https://puppetserver:8140/puppet-ca/v1/certificate/'
     url = "#{base}#{fqdn}"
     ssldir = '/etc/puppetlabs/puppet/ssl'
     ca = "#{ssldir}/certs/ca.pem"
