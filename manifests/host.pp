@@ -8,8 +8,10 @@ define l2mesh::host(
   $service,
   $file_tag,
   String $network,
-  String $fqdn = $title,
-  $conf        = undef,
+  String $prefix        = 'fd00::',
+  Integer $prefixlength = 16,
+  String $fqdn          = $title,
+  $conf                 = undef,
 ) {
 
   #if $public_key_content and $public_key_source {
@@ -55,8 +57,6 @@ define l2mesh::host(
   Concat::Fragment <<| tag == $file_tag |>>
 
   # write systemd config
-  $prefix = 'fd00::'
-  $prefixlength = 16
   systemd::network{"${network}.netdev":
     content         => epp("${module_name}/systemd.netdev.epp"),
     restart_service => true,
