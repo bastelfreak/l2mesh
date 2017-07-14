@@ -18,7 +18,7 @@ Puppet::Functions.create_function(:get_public_keys) do
 #  end
 
   dispatch :get_public_keys do
-    param 'Array', 'fqdns'
+    param 'Array', :fqdns
   end
 
 #  def get_cert(fqdn)
