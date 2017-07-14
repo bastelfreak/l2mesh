@@ -10,7 +10,7 @@ define l2mesh::host(
   $public_key_source,
   #$public_key_content = undef,
   String $network,
-  Strinf $fqdn = $name,
+  String $fqdn = $name,
   $conf        = undef,
 ) {
 
