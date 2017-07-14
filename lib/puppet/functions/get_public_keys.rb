@@ -41,13 +41,13 @@ Puppet::Functions.create_function(:get_public_keys) do
 
   def get_public_keys(fqdns)
     base = 'https://fabric-puppetserver01.vps.hosteurope.de:8140/puppet-ca/v1/certificate/'
-    url = "#{base}#{fqdn}"
     ssldir = '/etc/puppetlabs/puppet/ssl'
     ca = "#{ssldir}/certs/ca.pem"
     client_priv = "#{ssldir}/private_key/fabric-puppetserver01.vps.hosteurope.de.pem"
     client_cert = "#{ssldir}/certs/fabric-puppetserver01.vps.hosteurope.de.pem"
     certs = {}
     fqdns.each do |fqdn|
+      url = "#{base}#{fqdn}"
      #certs[fqdn] = get_cert(fqdn)
       result = RestClient::Resource.new(
         url: url,
