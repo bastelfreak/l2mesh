@@ -8,7 +8,7 @@ define l2mesh::host(
   $service,
   $file_tag,
   String $network,
-  String $prefix        = 'fd00::',
+  String $prefix,
   Integer $prefixlength = 16,
   String $fqdn          = $title,
   $conf                 = undef,

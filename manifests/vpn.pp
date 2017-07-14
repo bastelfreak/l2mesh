@@ -292,15 +292,16 @@ define l2mesh::vpn (
   Concat::Fragment <<| tag == $tag |>>
 
   ::l2mesh::host{$fqdn:
-    host                => $host,
-    ip                  => $ip,
-    port                => $port,
-    tcp_only            => $tcp_only,
-    tag_conf            => $tag_conf,
-    file_tag            => $tag,
-    service             => $service,
-    conf                => $conf,
-    network             => $name,
+    host     => $host,
+    ip       => $ip,
+    port     => $port,
+    tcp_only => $tcp_only,
+    tag_conf => $tag_conf,
+    file_tag => $tag,
+    service  => $service,
+    conf     => $conf,
+    network  => $name,
+    prefix   => 'fd00::',
   }
   #L2mesh::Host <<| fqdn != $fqdn |>>
 
