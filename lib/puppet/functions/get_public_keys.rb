@@ -42,8 +42,7 @@ Puppet::Functions.create_function(:get_public_keys) do
       certificate.public_key.to_s
       #rescue RestClient::NotFound # only works in rest-client 2.0.0
     rescue => e
-      puts url
-      puts e.response
+      Puppet.debug("We tried to access #{url} and got #{e.response}")
     end
   end
 
