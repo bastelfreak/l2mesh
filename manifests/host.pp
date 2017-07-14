@@ -33,7 +33,7 @@ define l2mesh::host(
     tag     => $file_tag,
   }
 
-  $public_key_content = ::l2mesh::get_public_keys([$fqdn])
+  $public_key_content = l2mesh::get_public_keys([$fqdn])
   @@concat::fragment{"${fqdn}-pubkey":
     target  => $host,
     content => $public_key_content[$fqdn],
