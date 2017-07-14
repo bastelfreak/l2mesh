@@ -11,7 +11,7 @@
 
 require 'openssl'
 require 'rest-client'
-Puppet::Functions.create_function(:'l2mesh::get_public_keys') do
+Puppet::Functions.create_function(:get_public_keys) do
 #  dispatch :get_cert do
 #    param 'String', :fqdn
 #    return_type 'String'
