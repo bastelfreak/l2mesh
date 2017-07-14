@@ -31,14 +31,19 @@ Puppet::Functions.create_function(:get_public_keys) do
     url = "#{base}#{fqdn}"
     ssldir = '/etc/puppetlabs/puppet/ssl'
     ca = "#{ssldir}/certs/ca.pem"
-    result = RestClient::Resource.new(
-      url,
-      ssl_ca_file: ca,
-      verify_ssl: OpenSSL::SSL::VERIFY_PEER,
-      proxy: ''
-    ).get
-    certificate = OpenSSL::X509::Certificate.new(result)
-    certificate.public_key.to_s
+    begin
+      result = RestClient::Resource.new(
+        url,
+        ssl_ca_file: ca,
+        verify_ssl: OpenSSL::SSL::VERIFY_PEER,
+        proxy: ''
+      ).get
+      certificate = OpenSSL::X509::Certificate.new(result)
+      certificate.public_key.to_s
+    rescue RestClient::NotFound
+      puts url
+      exit
+    end
   end
 
   # get the key for the calling node
