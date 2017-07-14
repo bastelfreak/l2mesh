@@ -2,7 +2,7 @@
 Name=<%= $network %>
 
 [Address]
-Address=<%= $prefix %>:<%= $:address %>/<%= $prefixlength %>
+Address=<%= $prefix %>:<%= $address %>/<%= $prefixlength %>
 
 [Link]
 MACAddress=<%= $mac %>
