@@ -40,8 +40,10 @@ Puppet::Functions.create_function(:get_public_keys) do
       ).get
       certificate = OpenSSL::X509::Certificate.new(result)
       certificate.public_key.to_s
-    rescue RestClient::NotFound
+      #rescue RestClient::NotFound # only works in rest-client 2.0.0
+      resuce => e
       puts url
+      puts e.response
       exit
     end
   end
