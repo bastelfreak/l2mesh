@@ -43,7 +43,7 @@ Puppet::Functions.create_function(:get_public_keys) do
     base = 'https://fabric-puppetserver01.vps.hosteurope.de:8140/puppet-ca/v1/certificate/'
     ssldir = '/etc/puppetlabs/puppet/ssl'
     ca = "#{ssldir}/certs/ca.pem"
-    client_priv = "#{ssldir}/private_key/fabric-puppetserver01.vps.hosteurope.de.pem"
+    client_priv = "#{ssldir}/private_keys/fabric-puppetserver01.vps.hosteurope.de.pem"
     client_cert = "#{ssldir}/certs/fabric-puppetserver01.vps.hosteurope.de.pem"
     certs = {}
     fqdns.each do |fqdn|
