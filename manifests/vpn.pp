@@ -186,6 +186,9 @@ define l2mesh::vpn (
   Boolean $use_puppet_certs = true,
 ) {
 
+  unless $systemd {
+    fail("this module only works on systems with systemd")
+  }
   include l2mesh::params
 
   $package = $l2mesh::params::tinc_package_name
@@ -253,34 +256,12 @@ define l2mesh::vpn (
     mode    => '0755',
     require => File[$root],
   }
-  if $use_puppet_certs {
-    $private_content = undef
-    $public_content  = undef
-    $private_source  = "/etc/puppetlabs/puppet/ssl/private_keys/${facts['fqdn']}.pem"
-    $public_source   = "/etc/puppetlabs/puppet/ssl/public_keys/${facts['fqdn']}.pem"
-  } else {
-    # the function returns an array with two strings, the private and pubkey
-    # an alternative is the usage of the puppet certs. The tricky part is that the puppet certs are file handles,
-    # the generates ones are actual strings, so the handling in the upcoming concat resources is tricky.
-    # this would probably much easier if both were unified. Exporting the cert content as facts sucks
-    # we should be able to use the function to generate the keys, but afterwards work with the file paths?
-    $keys            = tinc_keygen("${root}/${fqdn}")
-    #$private_content = $keys[0]
-    #$public_content  = $keys[1]
-
-    # the upcoming line is needed to ensure that the above function is actually called
-    if $keys {
-      $private_source  = "${root}/${fqdn}/rsa_key.priv"
-      $public_source   = "${root}/${fqdn}/rsa_key.pub"
-    }
-  }
 
   file { $private:
     owner   => 'root',
     group   => 'root',
     mode    => '0400',
-    #content => $private_content,
-    source  => $private_source,
+    source  => "/etc/puppetlabs/puppet/ssl/private_keys/${facts['fqdn']}.pem",
     notify  => Service[$service],
     before  => Service[$service],
   }
@@ -315,8 +296,6 @@ define l2mesh::vpn (
     ip                  => $ip,
     port                => $port,
     tcp_only            => $tcp_only,
-    #public_key_content => $public_content,
-    #public_key_source   => $public_source,
     tag_conf            => $tag_conf,
     file_tag            => $tag,
     service             => $service,
@@ -325,24 +304,9 @@ define l2mesh::vpn (
   }
   #L2mesh::Host <<| fqdn != $fqdn |>>
 
-  if $facts['systemd'] {
-    # the service gets required from l2mesh::host
-    # so we need a unified resource name
-    service{$service:
-      name   => "tinc@${name}",
-      ensure => 'running',
-      enable => true,
-    }
-  } else {
-    file { "/etc/init.d/${service}":
-      content => template('l2mesh/initscript.erb'),
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0755',
-    }
-    -> service { $service:
-      ensure => 'running',
-      enable => true,
-    }
+  service{$service:
+    name   => "tinc@${name}",
+    ensure => 'running',
+    enable => true,
   }
 }
