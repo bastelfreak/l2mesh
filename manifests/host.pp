@@ -7,8 +7,6 @@ define l2mesh::host(
   $tag_conf,
   $service,
   $file_tag,
-  #$public_key_source,
-  #$public_key_content = undef,
   String $network,
   String $fqdn = $title,
   $conf        = undef,
@@ -36,8 +34,7 @@ define l2mesh::host(
   $public_key_content = get_public_keys($facts['fqdn'])
   @@concat::fragment{"${fqdn}-pubkey":
     target  => $host,
-    content => $public_key_content[$fqdn],
-    #source  => $public_key_source,
+    content => $public_key_content,
     order   => '02',
     tag     => $file_tag,
   }
