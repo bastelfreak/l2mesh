@@ -5,7 +5,7 @@ Name=<%= $l2mesh::host::network %>
 Address=<%= $l2mesh::host::prefix %>:<%= $l2mesh::host::address %>/<%= $l2mesh::host::prefixlength %>
 
 [Link]
-MACAddress=<%= $$l2mesh::host::mac %>
+MACAddress=<%= $l2mesh::host::mac %>
 MulticastDNS=true
 LLDP=true
 LLMNR=true
