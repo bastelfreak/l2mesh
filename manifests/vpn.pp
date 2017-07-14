@@ -293,12 +293,6 @@ define l2mesh::vpn (
     before  => Service[$service],
   }
 
-  concat::fragment{"${conf}pubkey":
-    target => $public,
-    #content => $public_content,
-    source  => $public_source,
-  }
-
   # Build tinc.conf file, adding hosts except localhost
   concat { $conf:
     owner          => 'root',
