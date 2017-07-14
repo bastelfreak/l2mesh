@@ -315,8 +315,7 @@ define l2mesh::vpn (
   # get the missing fragments from all nodes
   Concat::Fragment <<| tag == $tag |>>
 
-  class{'::l2mesh::host':
-    fqdn                => $fqdn,
+  ::l2mesh::host{$fqdn:
     host                => $host,
     ip                  => $ip,
     port                => $port,

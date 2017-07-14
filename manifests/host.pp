@@ -9,9 +9,9 @@ define l2mesh::host(
   $file_tag,
   $public_key_source,
   #$public_key_content = undef,
-  String $fqdn,
   String $network,
-  $conf               = undef,
+  Strinf $fqdn = $name,
+  $conf        = undef,
 ) {
 
   #if $public_key_content and $public_key_source {
