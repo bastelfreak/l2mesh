@@ -44,9 +44,11 @@ define l2mesh::host(
     tag     => $file_tag,
   }
   concat::fragment{"${conf}pubkey":
-    target => $public,
+    #target  => $public,
+    target   => "/etc/tinc/${network}/rsa_key.pub",
     #content => $public_content,
-    source  => $public_source,
+    #source  => $public_source,
+    content  => $public_key_content[$fqdn],
   }
   # export, collected in main class
   @@concat::fragment { "${tag_conf}_${fqdn}":
