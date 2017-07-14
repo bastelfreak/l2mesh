@@ -322,7 +322,7 @@ define l2mesh::vpn (
     port                => $port,
     tcp_only            => $tcp_only,
     #public_key_content => $public_content,
-    public_key_source   => $public_source,
+    #public_key_source   => $public_source,
     tag_conf            => $tag_conf,
     file_tag            => $tag,
     service             => $service,

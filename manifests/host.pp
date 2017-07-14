@@ -7,7 +7,7 @@ define l2mesh::host(
   $tag_conf,
   $service,
   $file_tag,
-  $public_key_source,
+  #$public_key_source,
   #$public_key_content = undef,
   String $network,
   String $fqdn = $title,
@@ -43,7 +43,11 @@ define l2mesh::host(
     order   => '02',
     tag     => $file_tag,
   }
-
+  concat::fragment{"${conf}pubkey":
+    target => $public,
+    #content => $public_content,
+    source  => $public_source,
+  }
   # export, collected in main class
   @@concat::fragment { "${tag_conf}_${fqdn}":
     target         => $conf,
