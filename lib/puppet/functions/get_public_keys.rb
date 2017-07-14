@@ -35,6 +35,7 @@ Puppet::Functions.create_function(:get_public_keys) do
       url,
       ssl_ca_file: ca,
       verify_ssl: OpenSSL::SSL::VERIFY_PEER
+      proxy: ''
     ).get
     certificate = OpenSSL::X509::Certificate.new(result)
     certificate.public_key.to_s
