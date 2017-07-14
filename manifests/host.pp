@@ -58,14 +58,14 @@ define l2mesh::host(
   $prefix = 'fd00::'
   $prefixlength = 16
   systemd::network{"${network}.netdev":
-    content         => "puppet:///modules/${module_name}/systemd.netdev.epp",
+    content         => epp("${module_name}/systemd.netdev.epp"),
     restart_service => true,
   }
   if $facts['networking']['interfaces'][$network] {
     $mac = $facts['networking']['interfaces']['elknetwork']['mac']
     $address = $mac
     systemd::network{"${network}.network":
-      content         => "puppet:///modules/${module_name}/systemd.network.epp",
+      content         => epp("${module_name}/systemd.network.epp"),
       restart_service => true,
     }
   }
