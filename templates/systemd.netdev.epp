@@ -1,3 +1,6 @@
+<%- |
+  String $network,
+| -%>
 [NetDev]
 Name=<%= $network %>
 Kind=tap

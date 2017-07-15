@@ -1,3 +1,10 @@
+<%- |
+  String $network,
+  String $prefix,
+  String $address,
+  Integer $prefixlength,
+  String $mac
+| -%>
 [Match]
 Name=<%= $network %>
 
