@@ -55,14 +55,24 @@ define l2mesh::host(
 
   # write systemd config
   systemd::network{"${network}.netdev":
-    content         => epp("${module_name}/systemd.netdev.epp"),
+    content         => epp("${module_name}/systemd.netdev.epp",
+      {
+        $network => $network
+      }),
     restart_service => true,
   }
   if $facts['networking']['interfaces'][$network] {
     $mac = $facts['networking']['interfaces']['elknetwork']['mac']
     $address = $mac
     systemd::network{"${network}.network":
-      content         => epp("${module_name}/systemd.network.epp"),
+      content         => epp("${module_name}/systemd.network.epp",
+        {
+          $network      => $network,
+          $prefix       => $prefix,
+          $address      => $address,
+          $prefixlength => $prefixlength,
+          $mac          => $mac
+        }),
       restart_service => true,
     }
   }
