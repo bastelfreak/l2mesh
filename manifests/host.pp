@@ -57,7 +57,7 @@ define l2mesh::host(
   systemd::network{"${network}.netdev":
     content         => epp("${module_name}/systemd.netdev.epp",
       {
-        $network => $network
+        network => $network
       }),
     restart_service => true,
   }
@@ -67,11 +67,11 @@ define l2mesh::host(
     systemd::network{"${network}.network":
       content         => epp("${module_name}/systemd.network.epp",
         {
-          $network      => $network,
-          $prefix       => $prefix,
-          $address      => $address,
-          $prefixlength => $prefixlength,
-          $mac          => $mac
+          network      => $network,
+          prefix       => $prefix,
+          address      => $address,
+          prefixlength => $prefixlength,
+          mac          => $mac
         }),
       restart_service => true,
     }
