@@ -14,9 +14,6 @@ define l2mesh::host(
   $conf                 = undef,
 ) {
 
-  #if $public_key_content and $public_key_source {
-  #  fail("you can't provide public_key_content and public_key_source")
-  #}
   @@concat { $host:
     owner   => 'root',
     group   => 'root',
